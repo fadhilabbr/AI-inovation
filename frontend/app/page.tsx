@@ -1,65 +1,97 @@
-import Image from "next/image";
+import OptimizeRouteButton from "./components/OptimizeRouteButton";
 
-export default function Home() {
+interface AnalyticsSummary {
+  total_bins: number;
+  active_bins: number;
+  full_bins: number;
+  total_trash_collected_kg: number;
+  top_materials: { type: string; percentage: number }[];
+}
+
+async function getData(): Promise<AnalyticsSummary> {
+  // Add a small delay for demo purposes (optional)
+  // await new Promise(resolve => setTimeout(resolve, 500)); 
+  
+  const res = await fetch("http://127.0.0.1:8000/api/v1/analytics/summary", {
+    cache: "no-store"
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch analytics");
+  }
+  return res.json();
+}
+
+export default async function Home() {
+  let data: AnalyticsSummary;
+  try {
+    data = await getData();
+  } catch (error) {
+    return (
+      <div className="glass-panel">
+        <h2>Backend Offline</h2>
+        <p>Please ensure the FastAPI backend is running on port 8000.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="animate-fade-in">
+      <div style={{ marginBottom: "32px" }}>
+        <h1 style={{ fontSize: "2.5rem", color: "var(--color-primary-dark)", marginBottom: "8px" }}>
+          Dashboard
+        </h1>
+        <p style={{ color: "var(--text-muted)", fontSize: "1.1rem" }}>
+          Real-time overview of the SmartBin network and environmental impact.
+        </p>
+      </div>
+      
+      <div className="metric-grid">
+        <div className="glass-panel metric-card">
+          <div className="metric-icon">🗑️</div>
+          <div className="metric-title">Total Bins</div>
+          <div className="metric-value">{data.total_bins}</div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="glass-panel metric-card">
+          <div className="metric-icon" style={{ background: "rgba(14, 165, 233, 0.1)", color: "var(--color-secondary)" }}>✨</div>
+          <div className="metric-title">Active Bins</div>
+          <div className="metric-value">{data.active_bins}</div>
         </div>
-      </main>
+        <div className="glass-panel metric-card">
+          <div className="metric-icon" style={{ background: "rgba(239, 68, 68, 0.1)", color: "var(--color-danger)" }}>⚠️</div>
+          <div className="metric-title">Full Bins</div>
+          <div className="metric-value" style={{ color: "var(--color-danger)" }}>{data.full_bins}</div>
+        </div>
+        <div className="glass-panel metric-card">
+          <div className="metric-icon" style={{ background: "rgba(245, 158, 11, 0.1)", color: "var(--color-accent)" }}>⚖️</div>
+          <div className="metric-title">Total Collected</div>
+          <div className="metric-value">{data.total_trash_collected_kg.toLocaleString()} <span style={{ fontSize: "1rem" }}>kg</span></div>
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ marginBottom: "32px" }}>
+        <h2 style={{ color: "var(--color-primary-dark)", marginBottom: "24px" }}>Material Composition</h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {data.top_materials.map((material, index) => (
+            <div key={index}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontWeight: "600", textTransform: "capitalize" }}>
+                <span>{material.type}</span>
+                <span>{material.percentage}%</span>
+              </div>
+              <div className="progress-container">
+                <div 
+                  className="progress-fill safe" 
+                  style={{ 
+                    width: `${material.percentage}%`,
+                    background: index === 0 ? "var(--color-primary)" : index === 1 ? "var(--color-secondary)" : index === 2 ? "var(--color-accent)" : "var(--text-muted)"
+                  }}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <OptimizeRouteButton />
     </div>
   );
 }
