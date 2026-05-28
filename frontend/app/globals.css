@@ -1,7 +1,7 @@
 /* We will not use Tailwind's classes to respect the rule, but keep the import to avoid build errors if it's strictly required by Next.js setup */
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap'); */
 
 :root {
   --color-primary: #10b981; /* Vibrant Emerald Green */
@@ -260,3 +260,126 @@ h1, h2, h3, h4, h5, h6 {
 }
 .status-active { background: rgba(16, 185, 129, 0.1); color: var(--color-primary-dark); }
 .status-full { background: rgba(239, 68, 68, 0.1); color: var(--color-danger); animation: pulse 2s infinite; }
+
+/* Visibility Utilities */
+.mobile-only { display: none !important; }
+.desktop-only { display: block !important; }
+
+/* Responsive Mobile Layout (Bottom Navigation) */
+@media (max-width: 768px) {
+  /* Visibility Overrides */
+  .mobile-only { display: block !important; }
+  .desktop-only { display: none !important; }
+
+  .layout-container {
+    flex-direction: column;
+    padding-bottom: 80px; /* Space for bottom nav bar */
+  }
+
+  .sidebar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    padding: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-right: none;
+    border-top: 1px solid var(--glass-border);
+    z-index: 1000;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 32px 0 rgba(16, 185, 129, 0.1);
+  }
+
+  .sidebar-logo {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.75rem;
+    padding: 8px 12px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .nav-item:hover {
+    transform: none;
+  }
+
+  .nav-icon {
+    font-size: 1.25rem;
+  }
+
+  .sidebar div:last-child {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 24px 16px;
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .metric-card {
+    padding: 16px;
+  }
+
+  .metric-value {
+    font-size: 1.75rem;
+  }
+
+  .bins-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Optimize route button mobile adjustments */
+  .btn-primary {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+/* Gamification Reward Cards */
+.reward-card:hover {
+  transform: translateX(8px);
+  background: rgba(255,255,255,0.9) !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.1) !important;
+}
+
+.btn-reward-active {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-reward-active:hover {
+  transform: scale(1.05);
+}
+
+.btn-reward-disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+

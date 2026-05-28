@@ -9,10 +9,8 @@ interface AnalyticsSummary {
 }
 
 async function getData(): Promise<AnalyticsSummary> {
-  // Add a small delay for demo purposes (optional)
-  // await new Promise(resolve => setTimeout(resolve, 500)); 
-  
-  const res = await fetch("http://127.0.0.1:8000/api/v1/analytics/summary", {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/analytics/summary`, {
     cache: "no-store"
   });
   if (!res.ok) {

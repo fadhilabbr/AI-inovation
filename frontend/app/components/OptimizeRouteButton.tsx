@@ -16,7 +16,8 @@ export default function OptimizeRouteButton() {
   const handleOptimize = async () => {
     setStatus("loading");
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/dispatch/optimize-route", {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const res = await fetch(`${baseUrl}/api/v1/dispatch/optimize-route`, {
         method: "POST"
       });
       if (!res.ok) throw new Error("Failed to optimize");
