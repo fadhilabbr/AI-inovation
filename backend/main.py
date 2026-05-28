@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import ingestion, users, bins, dispatch, analytics
+from app.routers import ingestion, users, bins, dispatch, analytics, auth
+from app.database import engine
+from app import models
+
+# Create database tables
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="SmartBin Backend API",
@@ -23,6 +28,7 @@ app.include_router(users.router)
 app.include_router(bins.router)
 app.include_router(dispatch.router)
 app.include_router(analytics.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():
