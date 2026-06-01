@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from jose import jwt, JWTError
 from app.database import get_db
 from app import models
-from app.schemas.user import UserCreate, UserResponse, Token, LoginRequest
-from app.auth import verify_password, get_password_hash, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.schemas.user import UserCreate, UserResponse, Token, LoginRequest, RefreshTokenRequest
+from app.auth import verify_password, get_password_hash, create_access_token, create_refresh_token, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
 
 router = APIRouter(prefix="/api/v1/auth", tags=["Authentication"])
 
@@ -41,15 +42,51 @@ def login(user_data: LoginRequest, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # Create access token
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # Create access token and refresh token
     access_token = create_access_token(
-        data={"sub": user.email, "role": user.role, "id": user.id},
-        expires_delta=access_token_expires
+        data={"sub": user.email, "role": user.role, "id": user.id, "type": "access"}
     )
+    refresh_token = create_refresh_token(
+        data={"sub": user.email, "id": user.id}
+    )
+
+    # Store refresh token in database
+    user.refresh_token = refresh_token
+    db.commit()
 
     return {
         "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "user": user
+    }
+
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(request: RefreshTokenRequest, db: Session = Depends(get_db)):
+    """Get a new access token using refresh token"""
+    try:
+        payload = jwt.decode(request.refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        token_type: str = payload.get("type")
+        
+        if email is None or token_type != "refresh":
+            raise HTTPException(status_code=401, detail="Refresh token tidak valid")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Refresh token tidak valid atau kadaluarsa")
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if user is None or user.refresh_token != request.refresh_token:
+        raise HTTPException(status_code=401, detail="Refresh token tidak valid")
+
+    # Create new access token
+    new_access_token = create_access_token(
+        data={"sub": user.email, "role": user.role, "id": user.id, "type": "access"}
+    )
+
+    return {
+        "access_token": new_access_token,
+        "refresh_token": request.refresh_token,
         "token_type": "bearer",
         "user": user
     }
@@ -58,8 +95,6 @@ def login(user_data: LoginRequest, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserResponse)
 def get_me(token: str, db: Session = Depends(get_db)):
     """Verify token and return current user profile"""
-    from jose import jwt, JWTError
-    from app.auth import SECRET_KEY, ALGORITHM
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

@@ -2,7 +2,7 @@
 import { useAuth } from "./AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
-import ClientSidebar from "./ClientSidebar";
+import BottomNav from "./BottomNav";
 import AdminAlert from "./AdminAlert";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -22,35 +22,33 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [user, isLoading, isAuthPage, router]);
 
-  // Show blank screen while checking auth
+  // Loading screen
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-gradient)" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "16px" }}>🗑️</div>
-          <p style={{ color: "var(--text-muted)", fontFamily: "var(--font-heading)", fontSize: "1.2rem" }}>Memuat SmartBin...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4">
+        <div className="text-[3rem] animate-[pulse_1.5s_ease-in-out_infinite]">♻️</div>
+        <p className="text-gray-500 font-[family-name:var(--font-heading)] text-base font-semibold m-0">
+          Memuat EcoCraft...
+        </p>
       </div>
     );
   }
 
-  // Auth pages: no sidebar
+  // Auth pages — no nav
   if (isAuthPage) {
     return <>{children}</>;
   }
 
-  // Protected pages: show sidebar + content
+  // Protected pages
   if (!user) return null;
 
   return (
     <>
       {user.role === "admin" && <AdminAlert />}
-      <div className="layout-container">
-        <ClientSidebar />
-        <main className="main-content">
-          {children}
-        </main>
-      </div>
+      <main className="max-w-[600px] mx-auto min-h-screen bg-gray-50 pb-[80px]">
+        {children}
+      </main>
+      <BottomNav />
     </>
   );
 }

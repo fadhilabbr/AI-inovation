@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import ingestion, users, bins, dispatch, analytics, auth
+from app.routers import ingestion, users, bins, dispatch, analytics, auth, regions, vision, diy
 from app.database import engine
 from app import models
 
@@ -26,9 +26,12 @@ app.add_middleware(
 app.include_router(ingestion.router)
 app.include_router(users.router)
 app.include_router(bins.router)
+app.include_router(regions.router)
 app.include_router(dispatch.router)
 app.include_router(analytics.router)
 app.include_router(auth.router)
+app.include_router(vision.router)
+app.include_router(diy.router)
 
 @app.get("/")
 def read_root():

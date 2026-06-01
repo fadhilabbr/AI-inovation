@@ -12,7 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (token: string, user: User) => void;
+  login: (token: string, refreshToken: string, user: User) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch {
         // corrupted data, clear it
         localStorage.removeItem("smartbin_token");
+        localStorage.removeItem("smartbin_refresh_token");
         localStorage.removeItem("smartbin_user");
       } finally {
         setIsLoading(false);
@@ -45,10 +46,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer);
   }, []);
 
-  const login = (newToken: string, newUser: User) => {
+  const login = (newToken: string, refreshToken: string, newUser: User) => {
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem("smartbin_token", newToken);
+    localStorage.setItem("smartbin_refresh_token", refreshToken);
     localStorage.setItem("smartbin_user", JSON.stringify(newUser));
   };
 
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null);
     setUser(null);
     localStorage.removeItem("smartbin_token");
+    localStorage.removeItem("smartbin_refresh_token");
     localStorage.removeItem("smartbin_user");
   };
 

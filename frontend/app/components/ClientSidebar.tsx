@@ -5,45 +5,48 @@ import { useAuth } from "./AuthContext";
 import { useRouter } from "next/navigation";
 
 const NavItems = ({ role, onLogout }: { role: string, onLogout: () => void }) => {
+  const itemClass = "flex items-center gap-3 py-3 px-4 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-700 transition-colors no-underline font-semibold text-[0.95rem] w-full text-left";
+  const iconClass = "text-[1.2rem]";
+
   if (role === "admin") {
     return (
       <>
-        <Link href="/" className="nav-item">
-          <span className="nav-icon">📊</span>
-          <span className="nav-label">Dasbor</span>
+        <Link href="/adminpage" className={itemClass}>
+          <span className={iconClass}>📊</span>
+          <span>Dasbor</span>
         </Link>
-        <Link href="/bins" className="nav-item">
-          <span className="nav-icon">🗑️</span>
-          <span className="nav-label">Manajemen</span>
+        <Link href="/bins" className={itemClass}>
+          <span className={iconClass}>🗑️</span>
+          <span>Manajemen</span>
         </Link>
-        <Link href="/users" className="nav-item">
-          <span className="nav-icon">👥</span>
-          <span className="nav-label">Warga</span>
+        <Link href="/users" className={itemClass}>
+          <span className={iconClass}>👥</span>
+          <span>Warga</span>
         </Link>
-        <button onClick={onLogout} className="nav-item mobile-only" style={{ background: "transparent", border: "none", cursor: "pointer" }}>
-          <span className="nav-icon">🚪</span>
-          <span className="nav-label" style={{ color: "var(--color-danger)" }}>Keluar</span>
+        <button onClick={onLogout} className={`${itemClass} md:hidden bg-transparent border-none cursor-pointer`}>
+          <span className={iconClass}>🚪</span>
+          <span className="text-red-500">Keluar</span>
         </button>
       </>
     );
   }
   return (
     <>
-      <Link href="/" className="nav-item">
-        <span className="nav-icon">🌍</span>
-        <span className="nav-label">Beranda</span>
+      <Link href="/" className={itemClass}>
+        <span className={iconClass}>🌍</span>
+        <span>Beranda</span>
       </Link>
-      <Link href="/nearby-bins" className="nav-item">
-        <span className="nav-icon">📍</span>
-        <span className="nav-label">Cari Tong</span>
+      <Link href="/nearby-bins" className={itemClass}>
+        <span className={iconClass}>📍</span>
+        <span>Cari Tong</span>
       </Link>
-      <Link href="/users" className="nav-item">
-        <span className="nav-icon">🎁</span>
-        <span className="nav-label">Profil</span>
+      <Link href="/users" className={itemClass}>
+        <span className={iconClass}>🎁</span>
+        <span>Profil</span>
       </Link>
-      <button onClick={onLogout} className="nav-item mobile-only" style={{ background: "transparent", border: "none", cursor: "pointer" }}>
-        <span className="nav-icon">🚪</span>
-        <span className="nav-label" style={{ color: "var(--color-danger)" }}>Keluar</span>
+      <button onClick={onLogout} className={`${itemClass} md:hidden bg-transparent border-none cursor-pointer`}>
+        <span className={iconClass}>🚪</span>
+        <span className="text-red-500">Keluar</span>
       </button>
     </>
   );
@@ -63,52 +66,33 @@ const UserBadge = () => {
   const initials = user.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+    <div className="flex flex-col gap-3">
       {/* User profile card */}
-      <div style={{ padding: "14px 16px", background: "rgba(255,255,255,0.7)", borderRadius: "14px", border: "1px solid var(--glass-border)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-          <div style={{
-            width: "40px", height: "40px", borderRadius: "50%", flexShrink: 0,
-            background: user.role === "admin"
-              ? "linear-gradient(135deg, #6366f1, #8b5cf6)"
-              : "linear-gradient(135deg, var(--color-primary), var(--color-secondary))",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "white", fontWeight: "800", fontSize: "0.9rem"
-          }}>
+      <div className="p-3.5 bg-white/70 rounded-2xl border border-gray-200">
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-white font-extrabold text-[0.9rem] ${user.role === "admin" ? "bg-gradient-to-br from-indigo-500 to-purple-500" : "bg-gradient-to-br from-green-700 to-sky-500"}`}>
             {initials}
           </div>
-          <div style={{ overflow: "hidden" }}>
-            <div style={{ fontWeight: "700", fontSize: "0.9rem", color: "var(--text-main)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <div className="overflow-hidden">
+            <div className="font-bold text-[0.9rem] text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">
               {user.name}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            <div className="text-[0.75rem] text-gray-500">
               {user.role === "admin" ? "🛡️ Admin DLHK" : "👤 Warga"}
             </div>
           </div>
         </div>
 
-        {user.role === "warga" && (
-          <div style={{ padding: "8px 12px", background: "rgba(16,185,129,0.08)", borderRadius: "8px", textAlign: "center", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.8rem", color: "var(--color-primary-dark)", fontWeight: "700" }}>
-              🏆 {user.points.toLocaleString()} Poin
-            </span>
-          </div>
-        )}
-
         <button
           onClick={handleLogout}
-          style={{
-            width: "100%", padding: "8px 12px", borderRadius: "10px", border: "none",
-            background: "rgba(239,68,68,0.08)", color: "var(--color-danger)", fontWeight: "600",
-            fontSize: "0.85rem", cursor: "pointer", transition: "background 0.2s"
-          }}
+          className="w-full py-2 px-3 rounded-xl border-none bg-red-50 text-red-500 font-semibold text-[0.85rem] cursor-pointer transition-colors hover:bg-red-100"
         >
           Keluar →
         </button>
       </div>
 
-      <div style={{ padding: "10px", background: "rgba(255,255,255,0.5)", borderRadius: "12px", textAlign: "center" }}>
-        <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>Sistem: 🟢 Online</p>
+      <div className="p-2.5 bg-white/50 rounded-xl text-center">
+        <p className="text-[0.75rem] text-gray-500 m-0">Sistem: 🟢 Online</p>
       </div>
     </div>
   );
@@ -125,8 +109,8 @@ export default function ClientSidebar() {
 
   return (
     <>
-      <aside className="sidebar">
-        <div className="sidebar-logo">
+      <aside className="hidden md:flex flex-col w-[260px] h-screen fixed left-0 top-0 bg-white border-r border-gray-200 p-5 z-40">
+        <div className="flex items-center gap-2 font-[family-name:var(--font-heading)] font-extrabold text-2xl text-green-800 mb-8 px-2">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
             <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -135,11 +119,11 @@ export default function ClientSidebar() {
           SmartBin
         </div>
 
-        <nav className="sidebar-nav">
+        <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto">
           <NavItems role={user?.role || "warga"} onLogout={handleLogout} />
         </nav>
 
-        <div className="desktop-only" style={{ marginTop: "auto" }}>
+        <div className="hidden md:block mt-auto">
           <UserBadge />
         </div>
       </aside>

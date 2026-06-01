@@ -11,7 +11,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : "http://127.0.0.1:8000");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,10 +20,7 @@ export default function RegisterPage() {
       setError("Password dan konfirmasi password tidak cocok.");
       return;
     }
-    if (form.password.length < 6) {
-      setError("Password minimal 6 karakter.");
-      return;
-    }
+    // Password length validation removed
     setLoading(true);
     try {
       // Register
@@ -45,7 +42,7 @@ export default function RegisterPage() {
       });
       if (loginRes.ok) {
         const data = await loginRes.json();
-        login(data.access_token, data.user);
+        login(data.access_token, data.refresh_token, data.user);
         router.push("/");
       }
     } catch {
