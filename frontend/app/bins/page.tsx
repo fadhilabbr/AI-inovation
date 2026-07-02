@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext";
@@ -256,13 +257,13 @@ export default function BinsPage() {
     <div className="animate-[fadeIn_0.5s_ease-out_forwards] pb-10">
 
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <div className="mx-4 mt-4 mb-0 rounded-2xl bg-gradient-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden">
+      <div className="mx-4 mt-4 mb-0 rounded-2xl bg-linear-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-28 h-28 rounded-full bg-white/5 -translate-y-10 translate-x-10" />
         <div className="absolute bottom-0 left-4 w-16 h-16 rounded-full bg-white/5 translate-y-8" />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-[1.6rem] m-0 mb-1 font-[family-name:var(--font-heading)] font-extrabold text-white">
+            <h1 className="text-[1.6rem] m-0 mb-1 font-(family-name:--font-heading) font-extrabold text-white">
               Manajemen TPS 🗑️
             </h1>
             <p className="text-white/70 text-[0.85rem] m-0">
@@ -272,13 +273,13 @@ export default function BinsPage() {
 
           <div className="flex gap-2 flex-wrap">
             <button
-              className="bg-white text-green-800 border-none py-2 px-4 rounded-full font-[family-name:var(--font-heading)] font-bold cursor-pointer transition-colors hover:bg-green-50 shadow-sm text-sm"
+              className="bg-white text-green-800 border-none py-2 px-4 rounded-full font-(family-name:--font-heading) font-bold cursor-pointer transition-colors hover:bg-green-50 shadow-sm text-sm"
               onClick={openAddModal}
             >
               ➕ Tambah TPS
             </button>
             <button
-              className="bg-white/15 hover:bg-white/25 text-white border border-white/30 py-2 px-4 rounded-full font-[family-name:var(--font-heading)] font-bold cursor-pointer transition-colors shadow-sm text-sm"
+              className="bg-white/15 hover:bg-white/25 text-white border border-white/30 py-2 px-4 rounded-full font-(family-name:--font-heading) font-bold cursor-pointer transition-colors shadow-sm text-sm"
               onClick={openRegionModal}
             >
               🗺️ Tambah Wilayah
@@ -337,16 +338,16 @@ export default function BinsPage() {
               return (
                 <div
                   key={bin.bin_id}
-                  className="relative w-full min-h-[260px] [perspective:1000px] cursor-pointer group"
+                  className="relative w-full min-h-[260px] perspective-[1000px] cursor-pointer group"
                   onClick={() => toggleFlip(bin.bin_id)}
                 >
                   <div
-                    className={`w-full h-full absolute inset-0 transition-transform duration-500 [transform-style:preserve-3d] ${
-                      isFlipped ? "[transform:rotateY(180deg)]" : ""
+                    className={`w-full h-full absolute inset-0 transition-transform duration-500 transform-3d ${
+                      isFlipped ? "transform-[rotateY(180deg)]" : ""
                     }`}
                   >
                     {/* Front */}
-                    <div className="absolute inset-0 bg-white rounded-2xl shadow-sm p-5 border border-gray-100 [backface-visibility:hidden] flex flex-col transition-shadow group-hover:shadow-md">
+                    <div className="absolute inset-0 bg-white rounded-2xl shadow-sm p-5 border border-gray-100 backface-hidden flex flex-col transition-shadow group-hover:shadow-md">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1 min-w-0 mr-3">
                           <h3 className="m-0 text-green-800 text-lg font-bold leading-tight truncate">
@@ -405,7 +406,7 @@ export default function BinsPage() {
                     </div>
 
                     {/* Back */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-sm p-5 border border-green-200 [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col">
+                    <div className="absolute inset-0 bg-linear-to-br from-green-50 to-white rounded-2xl shadow-sm p-5 border border-green-200 backface-hidden transform-[rotateY(180deg)] flex flex-col">
                       <div className="flex justify-between items-center mb-4">
                         <h3 className="m-0 text-green-800 text-base font-bold">
                           Detail Isi: {bin.bin_id}
@@ -534,7 +535,7 @@ export default function BinsPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-[500px] shadow-2xl p-6 sm:p-8 animate-[fadeIn_0.3s_ease-out_forwards] max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-green-800 text-xl font-bold m-0 font-[family-name:var(--font-heading)]">
+              <h2 className="text-green-800 text-xl font-bold m-0 font-(family-name:--font-heading)">
                 {modalMode === "add" ? "➕ Tambah TPS Baru" : "✏️ Edit TPS"}
               </h2>
               <button
@@ -644,7 +645,7 @@ export default function BinsPage() {
             {/* Modal Header */}
             <div className="p-6 pb-0 flex justify-between items-center">
               <div>
-                <h2 className="text-green-800 text-xl font-bold m-0 font-[family-name:var(--font-heading)]">
+                <h2 className="text-green-800 text-xl font-bold m-0 font-(family-name:--font-heading)">
                   🗺️ Tambah Wilayah
                 </h2>
                 <p className="text-gray-400 text-xs m-0 mt-0.5">ID Wilayah harus unik dan berupa angka</p>

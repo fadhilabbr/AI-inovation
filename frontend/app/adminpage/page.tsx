@@ -90,13 +90,14 @@ export default function AdminPage() {
     return () => {
       clearInterval(timer);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baseUrl]);
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[80vh] flex-col gap-3">
         <div className="text-[2.5rem] animate-[spin_1.5s_linear_infinite]">♻️</div>
-        <p className="text-gray-500 text-base font-[family-name:var(--font-heading)] m-0">Memuat dasbor admin...</p>
+        <p className="text-gray-500 text-base font-(family-name:--font-heading) m-0">Memuat dasbor admin...</p>
       </div>
     );
   }
@@ -132,7 +133,7 @@ export default function AdminPage() {
     <div className="animate-[fadeIn_0.5s_ease-out_forwards] pb-10">
 
       {/* Header */}
-      <div className="mx-4 mt-4 rounded-2xl bg-gradient-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden">
+      <div className="mx-4 mt-4 rounded-2xl bg-linear-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden">
         {/* decorative circles */}
         <div className="absolute top-0 right-0 w-28 h-28 rounded-full bg-white/5 -translate-y-10 translate-x-10" />
         <div className="absolute bottom-0 left-4 w-16 h-16 rounded-full bg-white/5 translate-y-8" />
@@ -142,7 +143,7 @@ export default function AdminPage() {
             <p className="text-white/75 text-[0.85rem] m-0 mb-1 font-medium">
               Selamat datang,
             </p>
-            <h1 className="text-white text-[1.6rem] m-0 mb-1 font-[family-name:var(--font-heading)] font-extrabold">
+            <h1 className="text-white text-[1.6rem] m-0 mb-1 font-(family-name:--font-heading) font-extrabold">
               {user.name} 🛡️
             </h1>
             <p className="text-white/70 text-[0.85rem] m-0">
@@ -163,7 +164,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-2xl p-4 flex flex-col gap-1 border border-black/5 shadow-sm">
           <div className="text-2xl">🗑️</div>
           <div className="text-[0.75rem] text-gray-500 font-semibold uppercase tracking-wider">Total TPS</div>
-          <div className="text-2xl font-extrabold text-green-800 font-[family-name:var(--font-heading)]">
+          <div className="text-2xl font-extrabold text-green-800 font-(family-name:--font-heading)">
             {data.total_bins}
           </div>
         </div>
@@ -172,7 +173,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-2xl p-4 flex flex-col gap-1 border border-black/5 shadow-sm">
           <div className="text-2xl">✅</div>
           <div className="text-[0.75rem] text-gray-500 font-semibold uppercase tracking-wider">Aktif</div>
-          <div className="text-2xl font-extrabold text-sky-500 font-[family-name:var(--font-heading)]">
+          <div className="text-2xl font-extrabold text-sky-500 font-(family-name:--font-heading)">
             {data.active_bins}
           </div>
         </div>
@@ -181,7 +182,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-2xl p-4 flex flex-col gap-1 border border-black/5 shadow-sm">
           <div className="text-2xl">⚠️</div>
           <div className="text-[0.75rem] text-gray-500 font-semibold uppercase tracking-wider">Penuh</div>
-          <div className="text-2xl font-extrabold text-red-500 font-[family-name:var(--font-heading)]">
+          <div className="text-2xl font-extrabold text-red-500 font-(family-name:--font-heading)">
             {data.full_bins}
           </div>
         </div>
@@ -190,7 +191,7 @@ export default function AdminPage() {
         <div className="bg-white rounded-2xl p-4 flex flex-col gap-1 border border-black/5 shadow-sm">
           <div className="text-2xl">⚖️</div>
           <div className="text-[0.75rem] text-gray-500 font-semibold uppercase tracking-wider">Terkumpul</div>
-          <div className="text-2xl font-extrabold text-amber-500 font-[family-name:var(--font-heading)]">
+          <div className="text-2xl font-extrabold text-amber-500 font-(family-name:--font-heading)">
             {data.total_trash_collected_kg.toLocaleString()}<span className="text-sm font-medium"> kg</span>
           </div>
         </div>
@@ -198,11 +199,11 @@ export default function AdminPage() {
 
       {/* Capacity Status Card */}
       <div className="p-4">
-        <div className="bg-gradient-to-br from-green-50 to-white border border-green-100 rounded-2xl p-4 shadow-sm">
+        <div className="bg-linear-to-br from-green-50 to-white border border-green-100 rounded-2xl p-4 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <div>
               <p className="text-[0.8rem] text-gray-500 m-0 font-semibold">Kapasitas Jaringan</p>
-              <p className={`text-[1.4rem] font-extrabold m-0 font-[family-name:var(--font-heading)] ${fillPercent > 70 ? "text-red-500" : "text-green-700"}`}>
+              <p className={`text-[1.4rem] font-extrabold m-0 font-(family-name:--font-heading) ${fillPercent > 70 ? "text-red-500" : "text-green-700"}`}>
                 {fillPercent}% Terisi
               </p>
             </div>
@@ -210,7 +211,7 @@ export default function AdminPage() {
           </div>
           <div className="h-3.5 bg-gray-100 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-1000 ${fillPercent > 70 ? "bg-gradient-to-r from-amber-500 to-red-500" : "bg-gradient-to-r from-green-700 to-lime-500"}`}
+              className={`h-full rounded-full transition-all duration-1000 ${fillPercent > 70 ? "bg-linear-to-r from-amber-500 to-red-500" : "bg-linear-to-r from-green-700 to-lime-500"}`}
               style={{ width: `${fillPercent}%` }}
             />
           </div>
@@ -243,7 +244,7 @@ export default function AdminPage() {
                   const timeStr = date.toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                   
                   return (
-                    <div key={log.id} className={`flex items-center justify-between p-3.5 rounded-xl border ${idx === 0 ? "bg-gradient-to-br from-green-50 to-emerald-50 border-green-300 shadow-[0_2px_8px_rgba(16,185,129,0.1)]" : "bg-slate-50 border-slate-100"}`}>
+                    <div key={log.id} className={`flex items-center justify-between p-3.5 rounded-xl border ${idx === 0 ? "bg-linear-to-br from-green-50 to-emerald-50 border-green-300 shadow-[0_2px_8px_rgba(16,185,129,0.1)]" : "bg-slate-50 border-slate-100"}`}>
                       <div className="flex items-center gap-3 flex-1">
                         <span className="text-2xl">{icon}</span>
                         <div className="flex-1">

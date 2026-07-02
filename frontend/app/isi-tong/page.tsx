@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext";
@@ -240,13 +241,13 @@ export default function IsiTongPage() {
   return (
     <div className="animate-[fadeIn_0.5s_ease-out_forwards] pb-6">
       {/* Header */}
-      <div className="mx-4 mt-4 rounded-2xl bg-gradient-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden">
+      <div className="mx-4 mt-4 rounded-2xl bg-linear-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-28 h-28 rounded-full bg-white/5 -translate-y-10 translate-x-10" />
         <div className="absolute bottom-0 left-4 w-16 h-16 rounded-full bg-white/5 translate-y-8" />
 
         <div className="flex justify-between items-center relative z-10">
           <div>
-            <h1 className="text-white text-[1.6rem] font-extrabold m-0 mb-1 font-[family-name:var(--font-heading)]">
+            <h1 className="text-white text-[1.6rem] font-extrabold m-0 mb-1 font-(family-name:--font-heading)">
               🗑️ Isi Tong
             </h1>
             <p className="text-white/75 text-[0.85rem] m-0">
@@ -273,7 +274,7 @@ export default function IsiTongPage() {
           <div className="text-[0.7rem] text-gray-400 font-bold uppercase tracking-wide mb-1">
             Total Dikumpulkan
           </div>
-          <div className="text-[1.8rem] font-extrabold text-green-700 font-[family-name:var(--font-heading)]">
+          <div className="text-[1.8rem] font-extrabold text-green-700 font-(family-name:--font-heading)">
             {totalGlobalKg.toFixed(1)}
             <span className="text-[0.9rem] font-medium text-gray-500"> kg</span>
           </div>
@@ -284,7 +285,7 @@ export default function IsiTongPage() {
             Vol. Rata-rata Tong
           </div>
           <div
-            className={`text-[1.8rem] font-extrabold font-[family-name:var(--font-heading)] ${volumeAvg >= 85 ? "text-red-500" : volumeAvg >= 60 ? "text-amber-500" : "text-green-700"}`}
+            className={`text-[1.8rem] font-extrabold font-(family-name:--font-heading) ${volumeAvg >= 85 ? "text-red-500" : volumeAvg >= 60 ? "text-amber-500" : "text-green-700"}`}
           >
             {volumeAvg}
             <span className="text-[0.9rem] font-medium text-gray-500">%</span>
@@ -446,7 +447,7 @@ export default function IsiTongPage() {
             return (
               <div
                 key={log.id}
-                className={`rounded-xl p-3 flex items-center gap-3 ${idx === 0 ? "bg-gradient-to-br from-green-50 to-white border-[1.5px] border-green-200" : "bg-white border border-gray-100"}`}
+                className={`rounded-xl p-3 flex items-center gap-3 ${idx === 0 ? "bg-linear-to-br from-green-50 to-white border-[1.5px] border-green-200" : "bg-white border border-gray-100"}`}
               >
                 <div
                   className={`w-9 h-9 rounded-lg ${cfg.bgClass} flex items-center justify-center text-lg shrink-0`}
@@ -498,7 +499,7 @@ export default function IsiTongPage() {
             ) : (
               <>
                 <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-green-800 text-xl font-bold m-0 font-[family-name:var(--font-heading)]">
+                  <h2 className="text-green-800 text-xl font-bold m-0 font-(family-name:--font-heading)">
                     ➕ Tambah Tempat Sampah
                   </h2>
                   <button

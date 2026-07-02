@@ -27,6 +27,7 @@ export default function OptimizeRouteButton() {
       
       // Reset after 5 seconds
       setTimeout(() => setStatus("idle"), 5000);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       setStatus("error");
       setTimeout(() => setStatus("idle"), 3000);

@@ -31,7 +31,7 @@ const CAPACITY_BADGE = (pct: number) =>
     : "bg-green-100 text-green-700";
 
 export default function NearbyBins() {
-  const { user } = useAuth();
+  useAuth();
   const [bins, setBins] = useState<SmartBin[]>([]);
   const [regions, setRegions] = useState<Region[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,12 +128,12 @@ export default function NearbyBins() {
   return (
     <div className="animate-[fadeIn_0.5s_ease-out_forwards] pb-10">
       {/* Header */}
-      <div className="mx-4 mt-4 mb-5 rounded-2xl bg-gradient-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="mx-4 mt-4 mb-5 rounded-2xl bg-linear-to-br from-green-700 to-green-900 text-white p-5 shadow-lg shadow-green-900/20 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="absolute top-0 right-0 w-28 h-28 rounded-full bg-white/5 -translate-y-10 translate-x-10" />
         <div className="absolute bottom-0 left-4 w-16 h-16 rounded-full bg-white/5 translate-y-8" />
 
         <div className="relative z-10">
-          <h1 className="text-[1.6rem] m-0 mb-1 font-[family-name:var(--font-heading)] font-extrabold text-white">
+          <h1 className="text-[1.6rem] m-0 mb-1 font-(family-name:--font-heading) font-extrabold text-white">
             📍 Temukan TPS Terdekat
           </h1>
           <p className="text-white/70 text-[0.85rem] m-0">
@@ -141,7 +141,7 @@ export default function NearbyBins() {
           </p>
         </div>
         <button
-          className="relative z-10 bg-white text-green-800 border-none py-2.5 px-5 rounded-full font-[family-name:var(--font-heading)] font-bold cursor-pointer transition-colors hover:bg-green-50 shadow-sm w-full md:w-auto text-[0.9rem] flex items-center justify-center gap-2"
+          className="relative z-10 bg-white text-green-800 border-none py-2.5 px-5 rounded-full font-(family-name:--font-heading) font-bold cursor-pointer transition-colors hover:bg-green-50 shadow-sm w-full md:w-auto text-[0.9rem] flex items-center justify-center gap-2"
           onClick={() => { setIsModalOpen(true); setFormError(""); setSubmitSuccess(false); }}
         >
           ➕ Tambah TPS Baru
@@ -229,7 +229,7 @@ export default function NearbyBins() {
             ) : (
               <>
                 <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-green-800 text-xl font-bold m-0 font-[family-name:var(--font-heading)]">
+                  <h2 className="text-green-800 text-xl font-bold m-0 font-(family-name:--font-heading)">
                     ➕ Tambah TPS Baru
                   </h2>
                   <button
