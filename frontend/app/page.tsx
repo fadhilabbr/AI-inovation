@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./components/AuthContext";
@@ -37,7 +37,7 @@ export default function Home() {
 
   const baseUrl =
     process.env.NEXT_PUBLIC_API_URL ||
-    (typeof window !== "undefined" ? `http://${window.location.hostname}:8000` : "http://127.0.0.1:8000");
+    (typeof window !== "undefined" ? `${window.location.protocol}//${window.location.hostname}:8000` : "http://127.0.0.1:8000");
 
   useEffect(() => {
     if (user?.role === "admin") { router.push("/adminpage"); return; }
