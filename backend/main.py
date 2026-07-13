@@ -19,6 +19,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:3001",
+        "https://ai-inovation.vercel.app",
         "https://ai-inovation-production-7362.up.railway.app",
         "https://ai-inovation-yn4t-as92dsy72-fadhilabbrs-projects.vercel.app",
         "https://ai-inovation-h78h3lbqv-fadhilabbrs-projects.vercel.app",
