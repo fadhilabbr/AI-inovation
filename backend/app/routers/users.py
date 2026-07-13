@@ -7,7 +7,7 @@ from typing import List
 
 router = APIRouter(prefix="/api/v1/users", tags=["Users & Gamification"])
 
-@router.get("/", response_model=List[UserResponse])
+@router.get("", response_model=List[UserResponse])
 def get_all_users(db: Session = Depends(get_db)):
     return db.query(models.User).all()
 

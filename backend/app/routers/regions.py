@@ -7,11 +7,11 @@ from typing import List
 
 router = APIRouter(prefix="/api/v1/regions", tags=["Regions"])
 
-@router.get("/", response_model=List[RegionResponse])
+@router.get("", response_model=List[RegionResponse])
 def get_all_regions(db: Session = Depends(get_db)):
     return db.query(models.Region).all()
 
-@router.post("/", response_model=RegionResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=RegionResponse, status_code=status.HTTP_201_CREATED)
 def create_region(region_data: RegionCreate, db: Session = Depends(get_db)):
     # Check ID uniqueness
     db_region_id = db.query(models.Region).filter(models.Region.id == region_data.id).first()
