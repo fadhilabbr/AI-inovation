@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext";
+import { apiClient } from "../lib/api-client";
 
 interface UserProfile {
   id: number;
@@ -27,7 +28,7 @@ export default function UsersPage() {
       try {
         if (currentUser.role === "admin") {
           // Admin: fetch all users
-          const res = await fetch(`${baseUrl}/api/v1/users`, { cache: "no-store" });
+          const res = await apiClient.fetch(`/api/v1/users`);
           if (!res.ok) throw new Error("Gagal mengambil data warga");
           const data = await res.json();
           setWargaList(data);
