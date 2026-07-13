@@ -199,7 +199,7 @@ export default function BinsPage() {
 
     setRegionSubmitting(true);
     try {
-      const res = await fetch(`${baseUrl}/api/v1/regions/`, {
+      const res = await fetch(`${baseUrl}/api/v1/regions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
