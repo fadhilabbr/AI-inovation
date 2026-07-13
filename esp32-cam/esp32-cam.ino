@@ -1,22 +1,26 @@
+// ===========================
+// ESP32-CAM Trigger Capture (GPIO13)
+// ===========================
+
 #include <WiFi.h>
 #include "esp_camera.h"
-#include <WebServer.h> // Tambahan library Web Server
+#include <WebServer.h>
 
 // ===========================
 // Wi-Fi Configuration
 // ===========================
-const char* ssid = "fadhillllll";          // Wi-Fi Anda
-const char* password = "Hellooll";        // Password Wi-Fi Anda
+const char* ssid = "fadhillllll";
+const char* password = "Hellooll";
 
 // ===========================
-// Server Configuration (Untuk mode client upload)
+// Server Configuration
 // ===========================
-const char* serverName = "10.46.10.241";  // IP Laptop/Backend Anda
+const char* serverName = "10.46.10.241";
 const int serverPort = 8000;
 const String serverPath = "/api/vision/classify?bin_id=BIN-002";
 
 // ===========================
-// Camera Pins (AI Thinker Model)
+// Camera Pins (AI Thinker)
 // ===========================
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
@@ -35,67 +39,61 @@ const String serverPath = "/api/vision/classify?bin_id=BIN-002";
 #define HREF_GPIO_NUM     23
 #define PCLK_GPIO_NUM     22
 
-unsigned long previousMillis = 0;
-const long interval = 30000; // Upload berkala ke backend setiap 30 detik
+// ===========================
+// Pin Tambahan
+// ===========================
+#define FLASH_PIN   4
+#define TRIGGER_PIN 13  // dari Arduino (via resistor divider)
 
 // ===========================
-// Flash LED Pin
-// ===========================
-#define FLASH_PIN 4
-
-// Inisialisasi Web Server di port 80
 WebServer server(80);
 
-// Fungsi untuk menangani request GET /capture dari laptop
+// ===========================
+// Handler Web (opsional tetap ada)
+// ===========================
 void handleCapture() {
-  // Nyalakan Flash sesaat sebelum mengambil gambar
   digitalWrite(FLASH_PIN, HIGH);
-  delay(300); // Berikan waktu sebentar agar sensor kamera menyesuaikan cahaya
-  
+  delay(300);
+
   camera_fb_t * fb = esp_camera_fb_get();
-  
-  // Matikan Flash segera setelah gambar diambil
+
   digitalWrite(FLASH_PIN, LOW);
+
   if(!fb) {
-    Serial.println("Camera capture failed");
     server.send(500, "text/plain", "Camera capture failed");
     return;
   }
-  
-  // Kirim header HTTP image/jpeg
+
   server.setContentLength(fb->len);
   server.send(200, "image/jpeg", "");
-  
-  // Kirim data byte gambar
   WiFiClient client = server.client();
   client.write(fb->buf, fb->len);
-  
-  // Kembalikan buffer kamera
+
   esp_camera_fb_return(fb);
-  Serial.println("Image served via Web Server!");
 }
 
+// ===========================
+// Setup
+// ===========================
 void setup() {
   Serial.begin(115200);
-  Serial.println();
-  
-  // Inisialisasi pin flash sebagai output
+
   pinMode(FLASH_PIN, OUTPUT);
-  // Matikan flash di awal agar tidak menyilaukan
   digitalWrite(FLASH_PIN, LOW);
-  
-  // Wi-Fi setup
+
+  pinMode(TRIGGER_PIN, INPUT);
+
+  // WiFi
   WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi");
+  Serial.print("Connecting WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nWiFi Connected!");
-  Serial.print("IP Address ESP32-CAM: ");
-  Serial.println(WiFi.localIP()); // Mencetak IP ESP32-CAM di serial monitor
+  Serial.println("\nConnected!");
+  Serial.println(WiFi.localIP());
 
-  // Camera setup
+  // Camera config
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
@@ -117,7 +115,7 @@ void setup() {
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
-  
+
   if(psramFound()){
     config.frame_size = FRAMESIZE_UXGA;
     config.jpeg_quality = 10;
@@ -128,105 +126,82 @@ void setup() {
     config.fb_count = 1;
   }
 
-  // Initialize camera
-  esp_err_t err = esp_camera_init(&config);
-  if (err != ESP_OK) {
-    Serial.printf("Camera init failed with error 0x%x", err);
+  if (esp_camera_init(&config) != ESP_OK) {
+    Serial.println("Camera init failed");
     return;
   }
-  Serial.println("Camera initialized. Ready!");
 
-  // Routing Web Server
+  // Web server tetap aktif (opsional)
   server.on("/capture", HTTP_GET, handleCapture);
-  server.on("/", HTTP_GET, handleCapture);
   server.begin();
-  Serial.println("Web Server ESP32-CAM started on port 80");
+
+  Serial.println("Ready (Trigger Mode)");
 }
 
-void loop() {
-  // Jalankan listener Web Server
-  server.handleClient();
-
-  // Pengiriman berkala tetap berjalan
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-    if (WiFi.status() == WL_CONNECTED) {
-      takeAndSendPicture();
-    } else {
-      WiFi.reconnect();
-    }
-  }
-}
-
+// ===========================
+// Upload function
+// ===========================
 void takeAndSendPicture() {
-  // Nyalakan Flash sesaat sebelum mengambil gambar
   digitalWrite(FLASH_PIN, HIGH);
-  delay(300); // Berikan waktu sebentar agar sensor kamera menyesuaikan cahaya
-  
+  delay(300);
+
   camera_fb_t * fb = esp_camera_fb_get();
-  
-  // Matikan Flash segera setelah gambar diambil
+
   digitalWrite(FLASH_PIN, LOW);
+
   if(!fb) {
-    Serial.println("Camera capture failed");
+    Serial.println("Capture failed");
     return;
   }
-  
-  Serial.println("\nPicture taken! Connecting to server...");
-  
+
   WiFiClient client;
   if (!client.connect(serverName, serverPort)) {
-    Serial.println("Connection to server failed");
+    Serial.println("Server connect failed");
     esp_camera_fb_return(fb);
     return;
   }
 
-  Serial.println("Connected to server, uploading image...");
-  
-  // Format multipart/form-data
-  String head = "--SmartBinBoundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"esp32-cam.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
-  String tail = "\r\n--SmartBinBoundary--\r\n";
+  String head = "--Boundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"img.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
+  String tail = "\r\n--Boundary--\r\n";
 
-  uint32_t imageLen = fb->len;
-  uint32_t totalLen = head.length() + imageLen + tail.length();
+  uint32_t totalLen = head.length() + fb->len + tail.length();
 
-  // Send HTTP POST request
   client.println("POST " + serverPath + " HTTP/1.1");
   client.println("Host: " + String(serverName));
   client.println("Content-Length: " + String(totalLen));
-  client.println("Content-Type: multipart/form-data; boundary=SmartBinBoundary");
+  client.println("Content-Type: multipart/form-data; boundary=Boundary");
   client.println();
   client.print(head);
 
-  // Send image chunks
-  uint8_t *fbBuf = fb->buf;
-  size_t fbLen = fb->len;
-  for (size_t n=0; n<fbLen; n=n+1024) {
-    if (n+1024 < fbLen) {
-      client.write(fbBuf, 1024);
-      fbBuf += 1024;
-    } else if (fbLen%1024>0) {
-      size_t remainder = fbLen%1024;
-      client.write(fbBuf, remainder);
-    }
-  }
+  client.write(fb->buf, fb->len);
   client.print(tail);
 
-  // Read response
-  Serial.println("Waiting for response...");
-  long startTimer = millis();
-  boolean state = false;
-  
-  while ((startTimer + 15000) > millis()) {
-    while (client.available()) {
-      char c = client.read();
-      Serial.print(c); // Print response to Serial Monitor
+  Serial.println("Uploaded!");
+
+  client.stop();
+  esp_camera_fb_return(fb);
+}
+
+// ===========================
+// Loop (Trigger-based)
+// ===========================
+bool lastState = LOW;
+unsigned long lastTriggerTime = 0;
+const int cooldown = 5000; // 5 detik biar ga spam
+
+void loop() {
+  server.handleClient();
+
+  int state = digitalRead(TRIGGER_PIN);
+
+  if (state == HIGH && lastState == LOW) {
+    if (millis() - lastTriggerTime > cooldown) {
+      Serial.println("Trigger! Taking picture...");
+      takeAndSendPicture();
+      lastTriggerTime = millis();
     }
   }
-  
-  Serial.println("\nUpload finished!");
-  
-  client.stop();
-  esp_camera_fb_return(fb); // Clear memory
+
+  lastState = state;
+  delay(50);
 }
