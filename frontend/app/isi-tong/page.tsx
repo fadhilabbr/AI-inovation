@@ -119,11 +119,7 @@ export default function IsiTongPage() {
     region_id: "" as string | number,
   });
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    (typeof window !== "undefined"
-      ? `${window.location.protocol}//${window.location.hostname}:8000`
-      : "http://127.0.0.1:8000");
+  const baseUrl = "https://ai-inovation-production-7362.up.railway.app";
 
   const loadData = async (isBackground = false) => {
     // If we have a logged in user and they are a "warga", filter bins by their ID. 
@@ -133,11 +129,12 @@ export default function IsiTongPage() {
     if (!isBackground) setLoading(true);
     else setIsRefreshing(true);
     try {
+      console.error("[browser] MENGGUNAKAN BASE URL:", baseUrl);
       const [resCompositions, resLogs, resBins, resRegions] = await Promise.all([
-        fetch(`${baseUrl}/api/v1/analytics/composition-by-bin`, {
+        fetch(`/api/v1/dashboard/composition-by-bin`, {
           cache: "no-store",
         }),
-        fetch(`${baseUrl}/api/v1/analytics/recent-logs?limit=20`, {
+        fetch(`/api/v1/dashboard/recent-logs?limit=20`, {
           cache: "no-store",
         }),
         fetch(`${baseUrl}/api/v1/bins${queryParams}`, { cache: "no-store" }),

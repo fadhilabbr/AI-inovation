@@ -35,9 +35,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    (typeof window !== "undefined" ? `${window.location.protocol}//${window.location.hostname}:8000` : "http://127.0.0.1:8000");
+  const baseUrl = "https://ai-inovation-production-7362.up.railway.app";
 
   useEffect(() => {
     if (user?.role === "admin") { router.push("/adminpage"); return; }
@@ -47,8 +45,8 @@ export default function Home() {
     async function loadData() {
       try {
         const [resSummary, resLogs] = await Promise.all([
-          fetch(`${baseUrl}/api/v1/analytics/summary`, { cache: "no-store" }),
-          fetch(`${baseUrl}/api/v1/analytics/recent-logs?limit=5`, { cache: "no-store" }),
+          fetch(`/api/v1/dashboard/summary`, { cache: "no-store" }),
+          fetch(`/api/v1/dashboard/recent-logs?limit=5`, { cache: "no-store" }),
         ]);
         if (!isMounted) return;
         if (resSummary.ok) setData(await resSummary.json());
