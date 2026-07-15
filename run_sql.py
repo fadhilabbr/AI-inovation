@@ -11,7 +11,7 @@ def run_dump():
         cursor = conn.cursor()
         
         print("Reading dump.sql...")
-        with open("dump.sql", "r", encoding="utf-16") as f:
+        with open("dump.sql", "r", encoding="utf-8") as f:
             sql = f.read()
             
         print("Executing SQL...")
